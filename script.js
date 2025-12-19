@@ -132,3 +132,4 @@ window.deleteTodo = deleteTodo;
 
 // 페이지 로드 시 Todo 목록 가져오기
 fetchTodos();
+
