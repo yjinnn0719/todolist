@@ -25,13 +25,17 @@ function fetchTodos() {
     updateInfo(todos);
 }
 
-// 새 Todo 추가
+// 새 Todo 추가 (중복 호출 방지)
+let isAdding = false;
 function addTodo(text) {
+    if (isAdding) return; // 이미 추가 중이면 무시
+    
     if (!text || text.trim().length === 0) {
         alert('할 일을 입력해주세요!');
         return;
     }
     
+    isAdding = true;
     const todos = getTodos();
     const newTodo = {
         id: Date.now(), // 고유 ID 생성
@@ -44,6 +48,11 @@ function addTodo(text) {
     saveTodos(todos);
     todoInput.value = '';
     fetchTodos();
+    
+    // 다음 이벤트를 위해 잠시 후 플래그 해제
+    setTimeout(() => {
+        isAdding = false;
+    }, 100);
 }
 
 // Todo 완료 상태 토글
@@ -106,7 +115,9 @@ function escapeHtml(text) {
 }
 
 // 이벤트 리스너
-addBtn.addEventListener('click', () => {
+addBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     const text = todoInput.value.trim();
     if (text) {
         addTodo(text);
@@ -119,6 +130,7 @@ addBtn.addEventListener('click', () => {
 todoInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         e.preventDefault();
+        e.stopPropagation();
         const text = todoInput.value.trim();
         if (text) {
             addTodo(text);
